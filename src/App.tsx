@@ -35,10 +35,6 @@ export default function App() {
       element: <InviteMember />,
     },
     {
-      path: "workspace/:id/finance",
-      element: <FinanceForm workspaceMembers={[]} />,
-    },
-    {
       path: "about",
       element: <div>About</div>,
     },
