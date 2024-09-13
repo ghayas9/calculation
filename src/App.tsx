@@ -1,26 +1,48 @@
-import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import * as React from "react";
+import { createBrowserRouter, RouterProvider } from "react-router-dom";
+import Index from "./pages";
+import Login from "./pages/login";
+import Signup from "./pages/signup";
+import Dashboard from "./pages/dashboard";
+import Workspace from "./pages/Workspace";
+import InviteMember from "./pages/InviteMember";
+import FinanceForm from "./pages/FinanceForm";
 
-function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
+export default function App() {
+  const router = createBrowserRouter([
+    {
+      path: "/",
+      element: <Index />,
+    },
+    {
+      path: "login",
+      element: <Login />,
+    },
+    {
+      path: "signup",
+      element: <Signup />,
+    },
+    {
+      path: "dashboard",
+      element: <Dashboard />,
+    },
+    {
+      path: "workspace/:id",
+      element: <Workspace />,
+    },
+    {
+      path: "workspace/:id/invite",
+      element: <InviteMember />,
+    },
+    {
+      path: "workspace/:id/finance",
+      element: <FinanceForm workspaceMembers={[]} />,
+    },
+    {
+      path: "about",
+      element: <div>About</div>,
+    },
+  ]);
+
+  return <RouterProvider router={router} />;
 }
-
-export default App;
