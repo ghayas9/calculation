@@ -1,14 +1,16 @@
-import React, { useState } from 'react';
-import { useForm, Controller } from 'react-hook-form';
-import Select from 'react-select';
-import { z } from 'zod';
-import { zodResolver } from '@hookform/resolvers/zod';
-import Modal from '../components/modal';
+import React, { useState } from "react";
+import { useForm, Controller } from "react-hook-form";
+import Select from "react-select";
+import { z } from "zod";
+import { zodResolver } from "@hookform/resolvers/zod";
+import Modal from "../components/modal";
 
 // Zod schema for form validation
 const financialFormSchema = z.object({
-  amount: z.number().min(1, 'Amount must be greater than zero'),
-  members: z.array(z.object({ value: z.number(), label: z.string() })).min(1, 'Select at least one member'),
+  amount: z.number().min(1, "Amount must be greater than zero"),
+  members: z
+    .array(z.object({ value: z.number(), label: z.string() }))
+    .min(1, "Select at least one member"),
   description: z.string().optional(),
   paidBy: z.string(),
 });
@@ -17,17 +19,24 @@ type FinancialFormInputs = z.infer<typeof financialFormSchema>;
 
 const FinancialForm: React.FC = () => {
   const workspaceMembers = [
-    { id: 1, name: 'Alice' },
-    { id: 2, name: 'Bob' },
-    { id: 3, name: 'Charlie' },
-    { id: 4, name: 'David' },
+    { id: 1, name: "Alice" },
+    { id: 2, name: "Bob" },
+    { id: 3, name: "Charlie" },
+    { id: 4, name: "David" },
   ];
 
-  const { register, handleSubmit, control, formState: { errors }, setValue, getValues } = useForm<FinancialFormInputs>({
+  const {
+    register,
+    handleSubmit,
+    control,
+    formState: { errors },
+    setValue,
+    getValues,
+  } = useForm<FinancialFormInputs>({
     resolver: zodResolver(financialFormSchema),
     defaultValues: {
-      paidBy: 'Himself',
-    }
+      paidBy: "Himself",
+    },
   });
 
   const [showModal, setShowModal] = useState(false);
@@ -37,12 +46,15 @@ const FinancialForm: React.FC = () => {
 
   const onSubmit = (data: FinancialFormInputs) => {
     const amountPerMember = data.amount / data.members.length;
-    console.log('Financial Data:', data);
+    console.log("Financial Data:", data);
     console.log(`Amount per member: ${amountPerMember}`);
     handleShowModal();
   };
 
-  const memberOptions = workspaceMembers.map(member => ({ value: member.id, label: member.name }));
+  const memberOptions = workspaceMembers.map((member) => ({
+    value: member.id,
+    label: member.name,
+  }));
 
   return (
     <div className="bg-white p-6 rounded-lg shadow-md max-w-lg mx-auto">
@@ -50,19 +62,25 @@ const FinancialForm: React.FC = () => {
       <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
         {/* Amount Field */}
         <div>
-          <label className="block text-sm font-medium text-gray-700">Amount</label>
+          <label className="block text-sm font-medium text-gray-700">
+            Amount
+          </label>
           <input
             type="number"
-            {...register('amount', { valueAsNumber: true })}
+            {...register("amount", { valueAsNumber: true })}
             className="mt-1 block w-full p-2 border border-gray-300 rounded-lg"
             placeholder="Enter amount"
           />
-          {errors.amount && <p className="text-red-500 text-xs">{errors.amount.message}</p>}
+          {errors.amount && (
+            <p className="text-red-500 text-xs">{errors.amount.message}</p>
+          )}
         </div>
 
         {/* Members Field */}
         <div>
-          <label className="block text-sm font-medium text-gray-700">Select Members</label>
+          <label className="block text-sm font-medium text-gray-700">
+            Select Members
+          </label>
           <Controller
             name="members"
             control={control}
@@ -76,15 +94,19 @@ const FinancialForm: React.FC = () => {
               />
             )}
           />
-          {errors.members && <p className="text-red-500 text-xs">{errors.members.message}</p>}
+          {errors.members && (
+            <p className="text-red-500 text-xs">{errors.members.message}</p>
+          )}
         </div>
 
         {/* Description Field */}
         <div>
-          <label className="block text-sm font-medium text-gray-700">Description</label>
+          <label className="block text-sm font-medium text-gray-700">
+            Description
+          </label>
           <input
             type="text"
-            {...register('description')}
+            {...register("description")}
             className="mt-1 block w-full p-2 border border-gray-300 rounded-lg"
             placeholder="Enter description (optional)"
           />
@@ -92,14 +114,18 @@ const FinancialForm: React.FC = () => {
 
         {/* Paid By Field */}
         <div>
-          <label className="block text-sm font-medium text-gray-700">Paid By</label>
+          <label className="block text-sm font-medium text-gray-700">
+            Paid By
+          </label>
           <select
-            {...register('paidBy')}
+            {...register("paidBy")}
             className="mt-1 block w-full p-2 border border-gray-300 rounded-lg"
           >
             <option value="Himself">Himself</option>
-            {workspaceMembers.map(member => (
-              <option key={member.id} value={member.name}>{member.name}</option>
+            {workspaceMembers.map((member) => (
+              <option key={member.id} value={member.name}>
+                {member.name}
+              </option>
             ))}
           </select>
         </div>
@@ -114,19 +140,24 @@ const FinancialForm: React.FC = () => {
       </form>
 
       {/* Custom Modal */}
-      <Modal
-        show={showModal}
-        onClose={handleCloseModal}
-        onConfirm={() => {
-          handleCloseModal();
-          handleSubmit(onSubmit)();
-        }}
-      >
+      <Modal show={showModal} onClose={handleCloseModal}>
         <div className="space-y-4">
-          <p><strong>Amount:</strong> {getValues('amount')}</p>
-          <p><strong>Description:</strong> {getValues('description') || 'No description'}</p>
-          <p><strong>Paid By:</strong> {getValues('paidBy')}</p>
-          <p><strong>Members:</strong> {getValues('members')?.map(member => member.label).join(', ')}</p>
+          <p>
+            <strong>Amount:</strong> {getValues("amount")}
+          </p>
+          <p>
+            <strong>Description:</strong>{" "}
+            {getValues("description") || "No description"}
+          </p>
+          <p>
+            <strong>Paid By:</strong> {getValues("paidBy")}
+          </p>
+          <p>
+            <strong>Members:</strong>{" "}
+            {getValues("members")
+              ?.map((member) => member.label)
+              .join(", ")}
+          </p>
         </div>
       </Modal>
     </div>
